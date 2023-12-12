@@ -16,11 +16,10 @@ let events = {
         up: "mouseup"
     },
     touch: {
-        down: "touchdown",
+        down: "touchstart",
         move: "touchmove",
         up: "touchend",
     },
-
 };
 
 let deviceType = "";
@@ -28,12 +27,12 @@ let deviceType = "";
 let draw = false;
 let erase = false;
 
-const isTouchDevice = () =>{
-    try{
+const isTouchDevice = () => {
+    try {
         document.createEvent("TouchEvent");
         deviceType = "touch";
         return true;
-    } catch (e){
+    } catch (e) {
         deviceType = "mouse";
         return false;
     }
@@ -41,87 +40,76 @@ const isTouchDevice = () =>{
 
 isTouchDevice();
 
-gridButton.addEventListener("click", ()=>{
+gridButton.addEventListener("click", () => {
     container.innerHTML = "";
     let count = 0;
-    for(let i=0; i < gridHeight.value; i++){
-        count +=2;
+    for (let i = 0; i < gridHeight.value; i++) {
+        count += 2;
         let div = document.createElement("div");
         div.classList.add("gridRow");
 
-        for (let j=0; j < gridWidth.value; j++){
-            count +=2;
+        for (let j = 0; j < gridWidth.value; j++) {
+            count += 2;
             let col = document.createElement("div");
             col.classList.add("gridCol");
-            col.setAttribute("id", 'gridCol${count}');
-            col.addEventListener(events[deviceType].down, ()=>{
+            col.setAttribute("id", `gridCol${count}`);
+            col.addEventListener(events[deviceType].down, () => {
                 draw = true;
-                if(erase){
+                if (erase) {
+                    col.style.backgroundColor = "transparent";
+                } else {
                     col.style.backgroundColor = colorButton.value;
                 }
             });
 
-            col.addEventListener(events[deviceType].move, (e)=>{
-                let elementId = document.elementFromPoint(
-                    !isTouchDevice() ? e.clientX : e.touches[0].clientX,
-                    !isTouchDevice() ? e.clientY : e.touches[0].clientY,
-                ).id;
-                checker(elementId);
+            col.addEventListener(events[deviceType].move, (e) => {
+                e.preventDefault();
+                let element = e.target;
+                if (draw && !erase) {
+                    if (element.classList.contains("gridCol")) {
+                        element.style.backgroundColor = colorButton.value;
+                    }
+                } else if (draw && erase) {
+                    if (element.classList.contains("gridCol")) {
+                        element.style.backgroundColor = "transparent";
+                    }
+                }
             });
 
-            col.addEventListener(events[deviceType].up, () =>{
+            col.addEventListener(events[deviceType].up, () => {
                 draw = false;
-
             });
 
             div.appendChild(col);
-
         }
 
         container.appendChild(div);
     }
 });
 
-function checker(elementId){
-    let gridColumns = document.querySelectorAll(".gridCol");
-    gridColumns.forEach((element)=>{
-        if(elementId == element.id){
-            if(draw && !erase){
-                element.style.backgroundColor = colorButton.value;
-            }else if(draw && erase){
-                element.style.backgroundColor = "transparent";
-
-            }
-            
-        }
-    })
-}
-
-clearGridButton.addEventListener("click", ()=> {
+clearGridButton.addEventListener("click", () => {
     erase = false;
 });
 
-eraseBtn.addEventListener("click", ()=>{
+eraseBtn.addEventListener("click", () => {
     erase = true;
+    draw = false;
 });
 
-paintBtn.addEventListener("click", ()=>{
-    erase = true;
+paintBtn.addEventListener("click", () => {
+    erase = false;
+    draw = false;
 });
 
-gridWidth.addEventListener("input", ()=>{
+gridWidth.addEventListener("input", () => {
     widthValue.innerHTML = gridWidth.value < 9 ? `0${gridWidth.value}` : gridWidth.value;
 });
 
-gridHeight.addEventListener("input", ()=>{
+gridHeight.addEventListener("input", () => {
     heightValue.innerHTML = gridHeight.value < 9 ? `0${gridHeight.value}` : gridHeight.value;
 });
 
-window.onload = () =>{
+window.onload = () => {
     gridHeight.value = 0;
-    gridWidth.value = 0;   
+    gridWidth.value = 0;
 };
-
-
-
-
