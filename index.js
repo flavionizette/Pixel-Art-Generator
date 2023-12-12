@@ -65,14 +65,10 @@ gridButton.addEventListener("click", () => {
             col.addEventListener(events[deviceType].move, (e) => {
                 e.preventDefault();
                 let element = e.target;
-                if (draw && !erase) {
-                    if (element.classList.contains("gridCol")) {
-                        element.style.backgroundColor = colorButton.value;
-                    }
-                } else if (draw && erase) {
-                    if (element.classList.contains("gridCol")) {
-                        element.style.backgroundColor = "transparent";
-                    }
+                if (draw && !erase && element.classList.contains("gridCol")) {
+                    element.style.backgroundColor = colorButton.value;
+                } else if (draw && erase && element.classList.contains("gridCol")) {
+                    element.style.backgroundColor = "transparent";
                 }
             });
 
@@ -88,18 +84,20 @@ gridButton.addEventListener("click", () => {
 });
 
 clearGridButton.addEventListener("click", () => {
-    erase = false;
+    let gridCols = document.querySelectorAll(".gridCol");
+    gridCols.forEach(col => {
+        col.style.backgroundColor = "transparent";
+    });
 });
 
 eraseBtn.addEventListener("click", () => {
     erase = true;
-    draw = false; // Garantir que não esteja desenhando ao ativar a borracha
+    draw = false;
 });
-
 
 paintBtn.addEventListener("click", () => {
     erase = false;
-    draw = false;
+    draw = true;
 });
 
 gridWidth.addEventListener("input", () => {
@@ -111,6 +109,6 @@ gridHeight.addEventListener("input", () => {
 });
 
 window.onload = () => {
-    gridHeight.value = 0;
-    gridWidth.value = 0;
+    gridHeight.value = 10; // Valor padrão para altura
+    gridWidth.value = 10; // Valor padrão para largura
 };
