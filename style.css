@@ -6,7 +6,7 @@
 }
 
 body{
-    background-color: green;
+    background-color: red;
 
 }
 
@@ -39,7 +39,7 @@ span{
 }
 
 button{
-    background-color: green;
+    background-color: red;
     border: none;
     border-radius: 5px;
     padding: 5px;

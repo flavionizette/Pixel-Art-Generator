@@ -93,8 +93,9 @@ clearGridButton.addEventListener("click", () => {
 
 eraseBtn.addEventListener("click", () => {
     erase = true;
-    draw = false;
+    draw = false; // Garantir que não esteja desenhando ao ativar a borracha
 });
+
 
 paintBtn.addEventListener("click", () => {
     erase = false;
